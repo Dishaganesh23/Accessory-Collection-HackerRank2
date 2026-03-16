@@ -1,106 +1,76 @@
-#include <bits/stdc++.h>
-using namespace std;
+import java.util.*;
 
-long long sumrange(long long a, long long b) {
-    long long res1 = (b * (b + 1)) / 2;
-    long long res2 = (a * (a - 1)) / 2;
-    return res1 - res2;
-}
+public class Solution {
 
-long long process(long long L, long long A, long long N, long long D) {
+    static long sumRange(long a, long b) {
+        long res1 = (b * (b + 1)) / 2;
+        long res2 = (a * (a - 1)) / 2;
+        return res1 - res2;
+    }
 
-    if (A < D) return -1;
+    static long process(long L, long A, long N, long D) {
 
-    if (D == 1) return L * A;
+        if (A < D) return -1;
 
-    long long upperlimit = (N - 1) / (D - 1);
-    long long res = 0;
+        if (D == 1) return L * A;
 
-    for (long long x = 1; x <= upperlimit; x++) {
+        long upperlimit = (N - 1) / (D - 1);
+        long result = 0;
 
-        long long extra = ((N - 1) - (D - 1) * x);
+        for (long x = 1; x <= upperlimit; x++) {
 
-        if (extra + A * x < L) continue;
+            long extra = ((N - 1) - (D - 1) * x);
 
-        long long temp = extra * A;
+            if (extra + A * x < L) continue;
 
-        long long num = (L - extra) / x;
+            long temp = extra * A;
 
-        long long subtotal = sumrange(A - num + 1, A);
-        temp += subtotal * x;
+            long num = (L - extra) / x;
 
-        if ((L - extra) % x != 0) {
-            long long last = (L - extra) % x;
-            temp += last * (A - num);
+            long subtotal = sumRange(A - num + 1, A);
+
+            temp += subtotal * x;
+
+            if ((L - extra) % x != 0) {
+                long last = (L - extra) % x;
+                temp += last * (A - num);
+            }
+
+            result = Math.max(result, temp);
         }
 
-        res = max(res, temp);
+        if (result == 0) return -1;
+
+        return result;
     }
 
-    if (res == 0) return -1;
-    return res;
-}
+    static String acessoryCollection(int L, int A, int N, int D) {
 
-string acessoryCollection(int L, int A, int N, int D) {
+        long ans = process(L, A, N, D);
 
-    long long ans = process(L, A, N, D);
+        if (ans == -1) return "SAD";
 
-    if (ans == -1) return "SAD";
-
-    return to_string(ans);
-}
-
-vector<string> split_string(string input_string) {
-    string::iterator new_end = unique(input_string.begin(), input_string.end(),
-        [] (const char &x, const char &y) {
-            return x == y && x == ' ';
-        });
-
-    input_string.erase(new_end, input_string.end());
-
-    while (input_string[input_string.length() - 1] == ' ')
-        input_string.pop_back();
-
-    vector<string> splits;
-    char delimiter = ' ';
-
-    size_t i = 0;
-    size_t pos = input_string.find(delimiter);
-
-    while (pos != string::npos) {
-        splits.push_back(input_string.substr(i, pos - i));
-        i = pos + 1;
-        pos = input_string.find(delimiter, i);
+        return Long.toString(ans);
     }
 
-    splits.push_back(input_string.substr(i));
+    public static void main(String[] args) {
 
-    return splits;
-}
+        Scanner sc = new Scanner(System.in);
 
-int main() {
-    ofstream fout(getenv("OUTPUT_PATH"));
+        int T = sc.nextInt();
 
-    int T;
-    cin >> T;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        for (int i = 0; i < T; i++) {
 
-    for (int T_itr = 0; T_itr < T; T_itr++) {
-        string LAND_temp;
-        getline(cin, LAND_temp);
+            int L = sc.nextInt();
+            int A = sc.nextInt();
+            int N = sc.nextInt();
+            int D = sc.nextInt();
 
-        vector<string> LAND = split_string(LAND_temp);
+            String result = acessoryCollection(L, A, N, D);
 
-        int L = stoi(LAND[0]);
-        int A = stoi(LAND[1]);
-        int N = stoi(LAND[2]);
-        int D = stoi(LAND[3]);
+            System.out.println(result);
+        }
 
-        string result = acessoryCollection(L, A, N, D);
-
-        fout << result << "\n";
+        sc.close();
     }
-
-    fout.close();
-    return 0;
 }
